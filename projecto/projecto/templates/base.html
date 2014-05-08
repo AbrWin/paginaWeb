@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <title>{% block title %} Bienvenidos {% endblock %}</title>
+        <link rel="stylesheet" href="/media/bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" href="/media/bootstrap/css/bootstrap-responsive.css">
+        <link type="image/x-icon" href="/media/favicon.ico" rel="shortcut icon" />
+        <script src="/media/js/jquery.js"></script>
+        <script src="/media/js/jquery.form.min.js"></script>
+        <script src="/media/js/demo.js"></script>
+        <script src="/media/bootstrap/js/bootstrap.js"></script>        
+        <style type="text/css">
+        body{
+            background-color: #F93A3A;
+            padding: 60px;
+            padding-bottom: 40px;
+        }
+        .sidebar-nav{
+            padding: 9px 0;
+        }
+        </style>
+        <script type="text/javascript">
+            $(document).on('ready',function(){
+                $.ajax({
+                    type:"GET",
+                    contentType:"application/json; charset=utf-8",
+                    dataType:"json",
+                    url:"/ws/productos/",
+                    success:function(response){
+                      var i = (response.length-1)-2;
+                      for(i;i<=(response.length-1);i++){
+                          $('#ProductosNuevos').append("<li>"+response[i].fields.nombre+"</li>");
+                                                 
+                      }                       
+                    }
+                });
+            });
+        </script>
+</head>
+<body>
+    <div class ="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <a class="brand" href="{% url "vista_principal" %}">WachtPrice </a>
+                {% if user.is_authenticated %}
+                    <a class="navbar-text pull-right"> Usuario {{user.username}}</a>
+                {% endif%}
+                <ul class="nav">
+                        <li><a href="{% url "vista_principal" %}">Inicio</a></li>
+                        <li><a href="/productos/page/1/">Productos</a></li>
+                        <li><a href="{% url "vista_contacto" %}">Contacto</a></li>
+                        <li><a href="{% url "vista_about" %}">Acerca de ...</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url "vista_logout" %}">Cerrar Sesion</a><li>
+                        {% else %}
+                        <li><a href="{% url "vista_login" %}">Login</a></li>
+                        {% endif %}                    
+                </ul>
+        </div> 
+    </div>
+</div>
+    
+<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span9">
+          <div class="hero-unit">
+            {% block content %}
+            {% endblock%}
+          </div>
+        </div><!--/span-->
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Mi perfil</li>
+              <br><p align="justify">
+              {%if user.is_authenticated %}
+                <p>Bienvenido {{ user }} </p>
+                <img src="{{get_image_profile}}" width="80px" heigth="80px"/>
+              {% else %}
+                <a href="/login/" class="btn btn-primary">Login<a>
+              {% endif %}
+              </p>
+            </ul>
+          </div><!--/.well -->
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Mi Carrito</li>
+              <br><p align="justify">
+                Carrito de Super
+              </p>
+            </ul>
+          </div><!--/.well -->
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list" id="ProductosNuevos">
+              <li class="nav-header">Nuevos Productos</li>              
+            </ul>
+          </div><!--/.well -->
+           <img class="img-rounded" src="/media/images/ima.jpg"/>
+        </div><!--/span-->
+      </div><!--/row-->
+      
+      <footer>
+        <p> &copy; Open Project 2013. Versión Django {{django_version}}</p> 
+      </footer>
+    </div><!--/.fluid-container-->
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>
